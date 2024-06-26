@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0
 
 
-;CapsLk keys
+;CapsLk hotkeys
 CapsLock & a::left
 CapsLock & d::right
 CapsLock & w::up
@@ -13,6 +13,7 @@ CapsLock & e::PgDn
 CapsLock & z::Home
 CapsLock & c::End
 
+;Fn keys (broken atm)
 CapsLock & 1::F1
 CapsLock & 2::F2
 CapsLock & 3::F3
@@ -32,11 +33,14 @@ AppsKey::Left
 >!RControl::Down
 >!AppsKey::Up
 
+;Desktop switching
 >^AppsKey::^#Right
 >^RAlt::^#Left
 
+;PrintScreen key
 >^BackSpace::PrintScreen
 
+;Media controls
 >^=::Volume_Up
 >^-::Volume_Down
 >^0::Volume_Mute
@@ -48,7 +52,7 @@ AppsKey::Left
 #Backspace::Delete
 +#Backspace::+Delete
 
-;Window Controls
+;Window controls
 >!-:: WinMinimize "A"
 >!=::
 {
@@ -66,6 +70,8 @@ AppsKey::Left
 >!Backspace::^w
 
 ;-----------------mouse-----------------
+
+;Hold mouse forward button for Alt + Tab
 XButton2::
 {
     if !KeyWait("XButton2", "T0.4")
@@ -80,6 +86,7 @@ XButton2::
     }
 }
 
+;Hold mouse back button for Ctrl
 XButton1::
 {
     if !KeyWait("XButton1", "T0.4")
@@ -103,6 +110,8 @@ XButton1::
 }
 
 ;-----------------laptop-----------------
+
+;Press the laptop calculater button to play/pause media and hold for next track.
 Launch_App2::
 {
     if !KeyWait("Launch_App2", "T0.4")
@@ -117,6 +126,7 @@ Launch_App2::
     }
 }
 
+;Use numpad * and - for volume control if NumLock is off
 If !GetKeyState("NumLock", "T")
 {
     NumpadSub:: Send "{Volume_Up}"

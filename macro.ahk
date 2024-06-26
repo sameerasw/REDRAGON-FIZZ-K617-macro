@@ -190,10 +190,25 @@ If !GetKeyState("NumLock", "T")
 ::|ty::Thank you!
 ::|yw::You're welcome!
 ::|np::No problem!
-::spprt::support
 ::wlcm::welcome
 ::|wfh::work from home
 ::|sri::Sri Lanka
 ::|hbd::Happy Cake Day
 ::|hack::https://hackbook.simple.ink/
 ::lorem::Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget ultricies aliquam, nunc nisl ultricies nunc, quis ultricies nisl nisl eget nisl.
+:*:spprt::support
+
+#HotIf WinActive("ahk_exe WindowsTerminal.exe")
+{
+    ;git commands
+    :*:gadd::git add .{enter}
+    :*:gcom::git commit -m ""{left}
+    :*:gpush::git push{enter}
+    :*:gpull::git pull{enter}
+    :*:gstat::git status{enter}
+    :*:glog::git log{enter}
+    :*:gdiff::git diff{enter}
+    :*:gfetch::git fetch{enter}
+    :*:gclone::git clone{space}
+    return
+}

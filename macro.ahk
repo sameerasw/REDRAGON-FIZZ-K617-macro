@@ -27,15 +27,32 @@ CapsLock & 0::F10
 CapsLock & -::F11
 CapsLock & =::F12
 
+CapsLock & Esc::`
+
+;Brightness adjustment
+AppsKey & -::
+{
+    Run 'nircmd.exe changebrightness -10'
+    Return
+}
+
+
+AppsKey & +::
+{
+    Run 'nircmd.exe changebrightness +10'
+    Return
+}
+
+
 ;Right Ctrl mods
 RCtrl::Right
 AppsKey::Left
->!RControl::Down
->!AppsKey::Up
+>^AppsKey::Down
+>^RShift::Up
 
 ;Desktop switching
->^AppsKey::^#Right
->^RAlt::^#Left
+>!AppsKey::^#Left
+>!RCtrl::^#Right
 
 ;PrintScreen key
 >^BackSpace::PrintScreen

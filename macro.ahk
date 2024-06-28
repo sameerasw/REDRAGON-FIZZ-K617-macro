@@ -89,30 +89,42 @@ AppsKey::Left
 ;-----------------mouse-----------------
 
 ;Hold mouse forward button for Alt + Tab
-XButton2::
+XButton2::#Tab
+
+XButton2 & WheelUp::
 {
-    if !KeyWait("XButton2", "T0.4")
-    {
-        Send "{LAlt down}{Tab}"
-        KeyWait "XButton2"
-        Send "{LAlt up}"
-    }
-    else
-    {
-        Send "{XButton2}"
-    }
+    Send '^#{Left}'
+    KeyWait "XButton2"
+    return
 }
+
+XButton2 & WheelDown::
+{
+    Send '^#{Right}'
+    KeyWait "XButton2"
+    return
+}
+
+XButton1 & RButton::^v
+XButton1 & LButton::
+{
+    Send "^c"
+    KeyWait "XButton2"
+    return
+}
+XButton1 & MButton::
+{
+    Send "^x"
+    KeyWait "XButton2"
+    return
+}
+
+XButton2 & XButton1::XButton2
 
 ;Hold mouse back button for Ctrl
 XButton1::
 {
-    if !KeyWait("XButton1", "T0.4")
-    {
-        Send "{LCtrl down}"
-        KeyWait "XButton1"
-        Send "{LCtrl up}"
-    }
-    else If WinActive("WhatsApp Beta")
+    If WinActive("WhatsApp Beta")
     {
         Send "{Esc}"
     }
@@ -125,6 +137,8 @@ XButton1::
         Send "{XButton1}"
     }
 }
+
+XButton1 & XButton2::#v
 
 ;-----------------laptop-----------------
 

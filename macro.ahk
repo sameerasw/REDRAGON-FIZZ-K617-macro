@@ -11,7 +11,7 @@ CapsLock & q::PgUp
 CapsLock & e::PgDn
 
 CapsLock & z::Home
-CapsLock & c::End
+CapsLock & x::End
 
 ;Fn keys (broken atm)
 CapsLock & 1::F1

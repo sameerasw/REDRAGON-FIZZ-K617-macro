@@ -30,14 +30,14 @@ CapsLock & =::F12
 CapsLock & Esc::`
 
 ;Brightness adjustment
-AppsKey & -::
+>!9::
 {
     Run 'nircmd.exe changebrightness -10'
     Return
 }
 
 
-AppsKey & +::
+>!0::
 {
     Run 'nircmd.exe changebrightness +10'
     Return
@@ -47,31 +47,32 @@ AppsKey & +::
 ;Right Ctrl mods
 RCtrl::Right
 AppsKey::Left
->^AppsKey::Down
->^RShift::Up
+>!RCtrl::Down
+>!RShift::Up
 
 ;Desktop switching
->!AppsKey::^#Left
->!RCtrl::^#Right
+>!,::^#Left
+>!.::^#Right
+
+>!/::#+Right
 
 ;PrintScreen key
->^BackSpace::PrintScreen
+>!BackSpace::PrintScreen
 
 ;Media controls
->^=::Volume_Up
->^-::Volume_Down
->^0::Volume_Mute
->^\::Media_Play_Pause
->^]::Media_Next
->^[::Media_Prev
+>!=::Volume_Up
+>!-::Volume_Down
+>!\::Media_Play_Pause
+>!]::Media_Next
+>![::Media_Prev
 
 ;macOS delete
 #Backspace::Delete
 +#Backspace::+Delete
 
 ;Window controls
->!-:: WinMinimize "A"
->!=::
+>!l:: WinMinimize "A"
+>!;::
 {
     WinGetPos &X, &Y, &W, &H, "A"
     if (W < SysGet(78))
@@ -84,12 +85,12 @@ AppsKey::Left
     }
 
 }
->!Backspace::^w
+>!'::^w
 
 ;-----------------mouse-----------------
 
 ;Hold mouse forward button for Alt + Tab
-XButton2::#Tab
+XButton2::XButton2
 
 XButton2 & WheelUp::
 {
@@ -119,7 +120,7 @@ XButton1 & MButton::
     return
 }
 
-XButton2 & XButton1::XButton2
+XButton2 & LButton::#Tab
 
 ;Hold mouse back button for Ctrl
 XButton1::

@@ -1,5 +1,6 @@
 #Requires AutoHotkey v2.0
 
+<#d::#Tab
 
 ;CapsLk hotkeys
 CapsLock & a::left
@@ -33,16 +34,14 @@ CapsLock & Esc::`
 >!9::
 {
     Run 'nircmd.exe changebrightness -10'
-    Return
+    return
 }
-
 
 >!0::
 {
     Run 'nircmd.exe changebrightness +10'
-    Return
+    return
 }
-
 
 ;Right Ctrl mods
 RCtrl::Right
@@ -75,12 +74,9 @@ AppsKey::Left
 >!;::
 {
     WinGetPos &X, &Y, &W, &H, "A"
-    if (W < SysGet(78))
-    {
+    if (W < SysGet(78)) {
         WinMaximize "A"
-    }
-    else
-    {
+    } else {
         WinRestore "A"
     }
 
@@ -88,9 +84,6 @@ AppsKey::Left
 >!'::^w
 
 ;-----------------mouse-----------------
-
-;Hold mouse forward button for Alt + Tab
-XButton2::XButton2
 
 XButton2 & WheelUp::
 {
@@ -106,65 +99,61 @@ XButton2 & WheelDown::
     return
 }
 
-XButton1 & RButton::^v
-XButton1 & LButton::
+
+
+;Hold mouse forward button for Ctrl
+XButton2::
 {
-    Send "^c"
-    KeyWait "XButton2"
-    return
-}
-XButton1 & MButton::
-{
-    Send "^x"
-    KeyWait "XButton2"
+    if !KeyWait("XButton2", "T0.5") {
+        SendInput "{Ctrl Down}"
+        KeyWait "XButton2"
+        SendInput "{Ctrl Up}"
+        return
+    } else {
+        Send "{XButton2}"
+    }
     return
 }
 
-XButton2 & LButton::#Tab
-
-;Hold mouse back button for Ctrl
+;Hold mouse back button for Shift
 XButton1::
 {
-    If WinActive("WhatsApp Beta")
-    {
-        Send "{Esc}"
+    if !KeyWait("XButton1", "T0.5") {
+        SendInput "{Shift Down}"
+        KeyWait "XButton1"
+        SendInput "{Shift Up}"
+        return
+    } else {
+        if WinActive("WhatsApp Beta") {
+            Send "{Esc}"
+        } else if WinActive("ahk_exe Telegram.exe") {
+            Send "{Esc}"
+        } else {
+            Send "{XButton1}"
+        }
     }
-    else If WinActive("ahk_exe Telegram.exe")
-    {
-        Send "{Esc}"
-    }
-    else
-    {
-        Send "{XButton1}"
-    }
+    return
 }
-
-XButton1 & XButton2::#v
 
 ;-----------------laptop-----------------
 
 ;Press the laptop calculater button to play/pause media and hold for next track.
 Launch_App2::
 {
-    if !KeyWait("Launch_App2", "T0.4")
-    {
+    if !KeyWait("Launch_App2", "T0.4") {
         Send "{Media_Next}"
         KeyWait "Launch_App2"
-    }
-    else
-    {
+    } else {
         Click "{Media_Play_Pause}"
         return
     }
 }
 
 ;Use numpad * and - for volume control if NumLock is off
-If !GetKeyState("NumLock", "T")
-{
+if !GetKeyState("NumLock", "T") {
     NumpadSub:: Send "{Volume_Up}"
     NumpadMult:: Send "{Volume_Down}"
 }
-
 
 ;Text replacements
 ::|mon::Monday

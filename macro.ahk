@@ -1,109 +1,97 @@
 #Requires AutoHotkey v2.0
 
-<#d::#Tab
+; Refactored to use Tab as a custom modifier
 
-;CapsLk hotkeys
-CapsLock & a::left
-CapsLock & d::right
-CapsLock & w::up
-CapsLock & s::down
+Tab:: HandleTab()
 
-CapsLock & q::PgUp
-CapsLock & e::PgDn
+; Function to handle Tab key logic
+HandleTab() {
+    static TabState := 0
+    if (TabState == 1) {
+        TabState := 0
+        Send "{Tab}"
+        return
+    }
+    TabState := 1
+    SetTimer ResetTabState, -200
+    KeyWait "Tab", "T0.3"
+    if !GetKeyState("Tab", "P") {
+        TabState := 0
+        Send "{Tab}"
+    }
+}
 
-CapsLock & z::Home
-CapsLock & x::End
+ResetTabState() {
+    global TabState
+    TabState := 0
+}
 
-;Fn keys (broken atm)
-CapsLock & 1::F1
-CapsLock & 2::F2
-CapsLock & 3::F3
-CapsLock & 4::F4
-CapsLock & 5::F5
-CapsLock & 6::F6
-CapsLock & 7::F7
-CapsLock & 8::F8
-CapsLock & 9::F9
-CapsLock & 0::F10
-CapsLock & -::F11
-CapsLock & =::F12
-
-CapsLock & Esc::`
-
-;Brightness adjustment
->!9::
-{
+; Brightness adjustment
+Tab & 9:: {
     Run 'nircmd.exe changebrightness -10'
     return
 }
 
->!0::
-{
+Tab & 0:: {
     Run 'nircmd.exe changebrightness +10'
     return
 }
 
-;Right Ctrl mods
+; Right Ctrl mods
 RCtrl::Right
-AppsKey::Left
->!RCtrl::Down
->!RShift::Up
+AppsKey::Up
+RAlt::Left
+CapsLock::Down
 
-;Desktop switching
->!,::^#Left
->!.::^#Right
+; Desktop switching
+Tab & ,::^#Left
+Tab & .::^#Right
 
->!/::#+Right
+Tab & /::#+Right
 
-;PrintScreen key
->!BackSpace::PrintScreen
+; PrintScreen key
+Tab & BackSpace::PrintScreen
 
-;Media controls
->!=::Volume_Up
->!-::Volume_Down
->!\::Media_Play_Pause
->!]::Media_Next
->![::Media_Prev
+; Media controls
+Tab & =::Volume_Up
+Tab & -::Volume_Down
+Tab & \::Media_Play_Pause
+Tab & ]::Media_Next
+Tab & [::Media_Prev
 
-;macOS delete
+; macOS delete
 #Backspace::Delete
 +#Backspace::+Delete
 
-;Window controls
->!l:: WinMinimize "A"
->!;::
-{
+; Window controls
+Tab & z:: WinMinimize "A"
+Tab & x:: {
     WinGetPos &X, &Y, &W, &H, "A"
     if (W < SysGet(78)) {
         WinMaximize "A"
     } else {
         WinRestore "A"
     }
-
 }
->!'::^w
 
-;-----------------mouse-----------------
+Tab & c::^w
 
-XButton2 & WheelUp::
-{
+; -----------------mouse-----------------
+
+XButton2 & WheelUp:: {
     Send '^#{Left}'
     KeyWait "XButton2"
     return
 }
 
-XButton2 & WheelDown::
-{
+XButton2 & WheelDown:: {
     Send '^#{Right}'
     KeyWait "XButton2"
     return
 }
 
-
-
-;Hold mouse forward button for Ctrl
-XButton2::
-{
+; Hold mouse forward button for Ctrl
+XButton2:: {
     if !KeyWait("XButton2", "T0.5") {
         SendInput "{Ctrl Down}"
         KeyWait "XButton2"
@@ -115,9 +103,8 @@ XButton2::
     return
 }
 
-;Hold mouse back button for Shift
-XButton1::
-{
+; Hold mouse back button for Shift
+XButton1:: {
     if !KeyWait("XButton1", "T0.5") {
         SendInput "{Shift Down}"
         KeyWait "XButton1"
@@ -135,11 +122,10 @@ XButton1::
     return
 }
 
-;-----------------laptop-----------------
+; -----------------laptop-----------------
 
-;Press the laptop calculater button to play/pause media and hold for next track.
-Launch_App2::
-{
+; Press the laptop calculator button to play/pause media and hold for next track.
+Launch_App2:: {
     if !KeyWait("Launch_App2", "T0.4") {
         Send "{Media_Next}"
         KeyWait "Launch_App2"
@@ -149,13 +135,13 @@ Launch_App2::
     }
 }
 
-;Use numpad * and - for volume control if NumLock is off
+; Use numpad * and - for volume control if NumLock is off
 if !GetKeyState("NumLock", "T") {
     NumpadSub:: Send "{Volume_Up}"
     NumpadMult:: Send "{Volume_Down}"
 }
 
-;Text replacements
+; Text replacements
 ::|mon::Monday
 ::|tue::Tuesday
 ::|wed::Wednesday
@@ -204,7 +190,7 @@ if !GetKeyState("NumLock", "T") {
 
 #HotIf WinActive("ahk_exe WindowsTerminal.exe")
 {
-    ;git commands
+    ; git commands
     :*:gadd::git add .{enter}
     :*:gcom::git commit -m ""{left}
     :*:gpush::git push{enter}
@@ -216,3 +202,17 @@ if !GetKeyState("NumLock", "T") {
     :*:gclone::git clone{space}
     return
 }
+
+; tab fixes with modifiers
+^Tab::Send "{Ctrl Down}{Tab}{Ctrl Up}"
++Tab::Send "{Shift Down}{Tab}{Shift Up}"
+^+Tab::Send "{Ctrl Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}"
+#Tab::Send "{LWin Down}{Tab}{LWin Up}"
+#+Tab::Send "{Shift Down}{LWin Down}{Tab}{LWin Up}{Shift Up}"
+^#Tab::Send "{Ctrl Down}{LWin Down}{Tab}{LWin Up}{Ctrl Up}"
+!Tab::Send "{Alt Down}{Tab}{Alt Up}"
+!+Tab::Send "{Alt Down}{Shift Down}{Tab}{Shift Up}{Alt Up}"
+!#Tab::Send "{Alt Down}{LWin Down}{Tab}{LWin Up}{Alt Up}"
+!^Tab::Send "{Alt Down}{Ctrl Down}{Tab}{Ctrl Up}{Alt Up}"
+!^+Tab::Send "{Alt Down}{Ctrl Down}{Shift Down}{Tab}{Shift Up}{Ctrl Up}{Alt Up}"
+!^#Tab::Send "{Alt Down}{Ctrl Down}{LWin Down}{Tab}{LWin Up}{Ctrl Up}{Alt Up}"

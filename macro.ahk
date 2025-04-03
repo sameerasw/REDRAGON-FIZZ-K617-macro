@@ -37,11 +37,7 @@ Tab & 0:: {
     return
 }
 
-; Right Ctrl mods
-RCtrl::Right
-AppsKey::Up
-RAlt::Left
-CapsLock::Down
+<#d::#Tab
 
 ; Desktop switching
 Tab & ,::^#Left
@@ -51,13 +47,6 @@ Tab & /::#+Right
 
 ; PrintScreen key
 Tab & BackSpace::PrintScreen
-
-; Media controls
-Tab & =::Volume_Up
-Tab & -::Volume_Down
-Tab & \::Media_Play_Pause
-Tab & ]::Media_Next
-Tab & [::Media_Prev
 
 ; macOS delete
 #Backspace::Delete
@@ -187,6 +176,15 @@ if !GetKeyState("NumLock", "T") {
 ::|hack::https://hackbook.simple.ink/
 ::lorem::Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam euismod, nisl eget ultricies aliquam, nunc nisl ultricies nunc, quis ultricies nisl nisl eget nisl.
 :*:spprt::support
+
+; -----------------Application-specific hotkeys-----------------
+
+; When Zen browser app is active, Win+S sends Ctrl+Alt+Z
+#HotIf WinActive("ahk_exe zen.exe") or WinActive("ahk_exe firefox.exe") and WinGetTitle("A") ~= "Mozilla Firefox"
+{
+    #s::Send "^!z"
+    #d::Send "^!z"
+}
 
 #HotIf WinActive("ahk_exe WindowsTerminal.exe")
 {

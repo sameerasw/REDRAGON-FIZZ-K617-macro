@@ -1,5 +1,78 @@
 #Requires AutoHotkey v2.0
 
+^!Tab::Send '+#{Right}'
+
+!q::Send '^#{Left}'
+!e::Send '^#{Right}'
+
+; Load the VirtualDesktopAccessor DLL https://github.com/Ciantic/VirtualDesktopAccessor
+vdDll := DllCall("LoadLibrary", "Str", "VirtualDesktopAccessor.dll", "Ptr")
+
+; Function to move window to adjacent desktop
+MoveWindowToDesktop(direction := "right") {
+    hwnd := WinGetID("A") ; Get active window
+
+    ; Get current desktop
+    currentDesktop := DllCall("VirtualDesktopAccessor.dll\GetCurrentDesktopNumber", "Int")
+    totalDesktops := DllCall("VirtualDesktopAccessor.dll\GetDesktopCount", "Int")
+
+    if (direction = "left" && currentDesktop > 0) {
+        targetDesktop := currentDesktop - 1
+    } else if (direction = "right" && currentDesktop < totalDesktops - 1) {
+        targetDesktop := currentDesktop + 1
+    } else {
+        return ; Already at edge
+    }
+
+    DllCall("VirtualDesktopAccessor.dll\MoveWindowToDesktopNumber", "Ptr", hwnd, "Int", targetDesktop)
+    DllCall("VirtualDesktopAccessor.dll\GoToDesktopNumber", "Int", targetDesktop)
+}
+
+GoToDesktopNumber(number) {
+    ; Ensure the number is valid
+    if (number < 0 || number >= DllCall("VirtualDesktopAccessor.dll\GetDesktopCount", "Int")) {
+        return
+    }
+    DllCall("VirtualDesktopAccessor.dll\GoToDesktopNumber", "Int", number)
+}
+
+MoveWindowToDesktopNumber(number) {
+    hwnd := WinGetID("A") ; Get active window
+    ; Ensure the number is valid
+    if (number < 0 || number >= DllCall("VirtualDesktopAccessor.dll\GetDesktopCount", "Int")) {
+        return
+    }
+    DllCall("VirtualDesktopAccessor.dll\MoveWindowToDesktopNumber", "Ptr", hwnd, "Int", number)
+}
+
+
+PinorUnpinWindow() {
+    hwnd := WinGetID("A") ; Get active window
+    if (hwnd) {
+        isPinned := DllCall("VirtualDesktopAccessor.dll\IsPinnedWindow", "Ptr", hwnd, "Int")
+        if (isPinned) {
+            DllCall("VirtualDesktopAccessor.dll\UnPinWindow", "Ptr", hwnd)
+        } else {
+            DllCall("VirtualDesktopAccessor.dll\PinWindow", "Ptr", hwnd)
+        }
+    }
+}
+
+; Hotkeys
++!q:: MoveWindowToDesktop("left")    ; Shift + Alt + Q
++!e:: MoveWindowToDesktop("right")   ; Shift + Alt + E
+
+!1::GoToDesktopNumber(0) ; Alt + 1
+!2::GoToDesktopNumber(1) ; Alt + 2
+!3::GoToDesktopNumber(2) ; Alt + 3
+!4::GoToDesktopNumber(3) ; Alt + 4
+
++!1::MoveWindowToDesktopNumber(0) ; Shift + Alt + 1
++!2::MoveWindowToDesktopNumber(1) ; Shift + Alt + 2
++!3::MoveWindowToDesktopNumber(2) ; Shift + Alt + 3
++!4::MoveWindowToDesktopNumber(3) ; Shift + Alt + 4
+
++!p::PinorUnpinWindow() ; Alt + P
 
 
 <#d::#Tab
@@ -180,4 +253,3 @@ if !GetKeyState("NumLock", "T") {
     :*:gclone::git clone{space}
     return
 }
-
